@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIS-MANAK AI - Intelligent Assistant for Indian Standards & Conformity</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bis: {
+                            navy: '#060B18',
+                            surface: '#0D1527',
+                            card: '#121D36',
+                            border: 'rgba(255, 255, 255, 0.08)',
+                            primary: '#38BDF8',
+                            accent: '#F59E0B',
+                            emerald: '#10B981',
+                            indigo: '#6366F1'
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'glow': 'glow 3s ease-in-out infinite alternate',
+                        'float': 'float 6s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        glow: {
+                            '0%': { opacity: '0.3', transform: 'scale(0.98)' },
+                            '100%': { opacity: '0.6', transform: 'scale(1.02)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #060B18;
+            color: #F8FAFC;
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .glass-panel {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-panel-glow {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(99, 102, 241, 0.03) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+        .bg-radial-grid {
+            background-image: radial-gradient(rgba(56, 189, 248, 0.12) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #FFFFFF 20%, #BAE6FD 60%, #F59E0B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen selection:bg-sky-500 selection:text-white relative overflow-x-hidden">
+
+    <!-- Ambient Glowing Backdrops -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[550px] bg-gradient-to-tr from-sky-500/20 via-indigo-500/15 to-amber-500/10 rounded-full blur-[140px] pointer-events-none -z-10 animate-pulse-slow"></div>
+    <div class="absolute top-40 right-10 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+    <div class="absolute inset-0 bg-radial-grid opacity-40 pointer-events-none -z-10"></div>
+
+    <!-- Header / Micro Navigation -->
+    <header class="w-full border-b border-white/5 bg-bis-navy/80 backdrop-blur-xl sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- BIS Brand & Emblem -->
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3 group cursor-pointer">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-sky-500 via-indigo-600 to-amber-500 p-[1.5px] shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-all duration-300">
+                        <div class="w-full h-full bg-bis-navy rounded-[14px] flex items-center justify-center">
+                            <i class="fa-solid fa-atom text-sky-400 text-lg group-hover:rotate-45 transition-transform duration-500"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-extrabold tracking-tight text-white text-lg">BIS-MANAK AI</span>
+                            <span class="px-2 py-0.5 text-[10px] font-bold bg-sky-500/10 border border-sky-500/30 text-sky-400 rounded-full uppercase tracking-wider">Enterprise Copilot</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 font-medium">Bureau of Indian Standards Knowledge Intelligence</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Central Fast Access Shortcuts -->
+            <div class="hidden lg:flex items-center gap-6 text-xs font-semibold text-slate-300">
+                <a href="#standards" class="hover:text-sky-400 transition-colors flex items-center gap-1.5"><i class="fa-solid fa-book-bookmark text-sky-400/70"></i> 22,000+ Standards</a>
+                <a href="#schemes" class="hover:text-sky-400 transition-colors flex items-center gap-1.5"><i class="fa-solid fa-certificate text-amber-400/70"></i> ISI & CRS Schemes</a>
+                <a href="#hallmark" class="hover:text-sky-400 transition-colors flex items-center gap-1.5"><i class="fa-solid fa-gem text-emerald-400/70"></i> HUID Hallmarking</a>
+                <a href="#labs" class="hover:text-sky-400 transition-colors flex items-center gap-1.5"><i class="fa-solid fa-microscope text-indigo-400/70"></i> Lab Recognition</a>
+            </div>
+
+            <!-- Multilingual Dropdown & Primary Action -->
+            <div class="flex items-center gap-3">
+                <div class="relative group">
+                    <button class="px-3 py-2 rounded-xl glass-panel text-xs font-semibold text-slate-200 hover:text-white hover:border-sky-500/40 flex items-center gap-2 transition-all">
+                        <i class="fa-solid fa-language text-sky-400 text-sm"></i>
+                        <span id="currentLangLabel">English (EN)</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 group-hover:rotate-180 transition-transform"></i>
+                    </button>
+                    <div class="absolute right-0 mt-2 w-44 glass-panel-glow bg-bis-surface rounded-xl p-1.5 hidden group-hover:block shadow-2xl border border-white/10 z-50">
+                        <button onclick="setLanguage('English (EN)')" class="w-full text-left px-3 py-2 text-xs font-medium text-slate-200 hover:bg-white/10 rounded-lg flex items-center justify-between">English (EN) <i class="fa-solid fa-check text-sky-400 text-[10px]"></i></button>
+                        <button onclick="setLanguage('हिन्दी (HI)')" class="w-full text-left px-3 py-2 text-xs font-medium text-slate-200 hover:bg-white/10 rounded-lg">हिन्दी (Hindi)</button>
+                        <button onclick="setLanguage('বাংলা (BN)')" class="w-full text-left px-3 py-2 text-xs font-medium text-slate-200 hover:bg-white/10 rounded-lg">বাংলা (Bengali)</button>
+                        <button onclick="setLanguage('தமிழ் (TA)')" class="w-full text-left px-3 py-2 text-xs font-medium text-slate-200 hover:bg-white/10 rounded-lg">தமிழ் (Tamil)</button>
+                        <button onclick="setLanguage('मराठी (MR)')" class="w-full text-left px-3 py-2 text-xs font-medium text-slate-200 hover:bg-white/10 rounded-lg">मराठी (Marathi)</button>
+                    </div>
+                </div>
+
+                <button class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-sky-500/25 transition-all active:scale-95">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Official Portal</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <main class="relative pt-12 pb-24 lg:pt-20 lg:pb-32 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Live Tagline Pill -->
+        <div class="flex justify-center mb-8">
+            <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full glass-panel-glow border border-sky-400/30 text-xs font-semibold text-slate-200 shadow-xl">
+                <span class="flex h-2 w-2 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span class="text-sky-300 font-bold">Clause-Grounded RAG Intelligence</span>
+                <span class="text-slate-500">|</span>
+                <span class="text-slate-300 font-medium">Empowering 63M+ Indian MSMEs, Startups & Consumers</span>
+                <i class="fa-solid fa-arrow-right text-[10px] text-sky-400"></i>
+            </div>
+        </div>
+
+        <!-- Hero Headline -->
+        <div class="text-center max-w-4xl mx-auto space-y-6">
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1]">
+                Demystifying Indian Standards with 
+                <span class="block text-gradient mt-1">Autonomous AI Precision</span>
+            </h1>
+            <p class="text-base sm:text-xl text-slate-300 max-w-3xl mx-auto font-normal leading-relaxed">
+                Instant semantic matching for <strong class="text-white font-semibold">22,000+ Indian Standards (IS codes)</strong>, BIS Conformity Assessment schemes, testing laboratory discovery, and real-time HUID hallmarking verification.
+            </p>
+        </div>
+
+        <!-- Intelligent Search & Query Command Center -->
+        <div class="mt-12 max-w-4xl mx-auto">
+            <!-- Mode Switcher Tabs -->
+            <div class="flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pb-3 custom-scrollbar text-xs font-semibold">
+                <button onclick="setQueryMode(this, 'product')" class="mode-tab px-4 py-2.5 rounded-xl bg-sky-500 text-white font-bold flex items-center gap-2 shadow-lg shadow-sky-500/20 whitespace-nowrap transition-all">
+                    <i class="fa-solid fa-magnifying-glass-nodes"></i>
+                    <span>Product to IS Code Matcher</span>
+                </button>
+                <button onclick="setQueryMode(this, 'scheme')" class="mode-tab px-4 py-2.5 rounded-xl glass-panel text-slate-300 hover:text-white hover:border-sky-500/40 flex items-center gap-2 whitespace-nowrap transition-all">
+                    <i class="fa-solid fa-stamp"></i>
+                    <span>ISI, CRS & FMCS Schemes</span>
+                </button>
+                <button onclick="setQueryMode(this, 'hallmark')" class="mode-tab px-4 py-2.5 rounded-xl glass-panel text-slate-300 hover:text-white hover:border-sky-500/40 flex items-center gap-2 whitespace-nowrap transition-all">
+                    <i class="fa-solid fa-gem text-amber-400"></i>
+                    <span>HUID Hallmarking Guide</span>
+                </button>
+                <button onclick="setQueryMode(this, 'labs')" class="mode-tab px-4 py-2.5 rounded-xl glass-panel text-slate-300 hover:text-white hover:border-sky-500/40 flex items-center gap-2 whitespace-nowrap transition-all">
+                    <i class="fa-solid fa-microscope text-emerald-400"></i>
+                    <span>Testing Lab Locator</span>
+                </button>
+                <button onclick="setQueryMode(this, 'consumer')" class="mode-tab px-4 py-2.5 rounded-xl glass-panel text-slate-300 hover:text-white hover:border-sky-500/40 flex items-center gap-2 whitespace-nowrap transition-all">
+                    <i class="fa-solid fa-users-viewfinder"></i>
+                    <span>Consumer Rights</span>
+                </button>
+            </div>
+
+            <!-- Intelligent Search Bar -->
+            <div class="relative mt-3 group">
+                <div class="absolute -inset-1 bg-gradient-to-r from-sky-500 via-indigo-500 to-amber-500 rounded-3xl blur-xl opacity-30 group-hover:opacity-60 transition duration-500 animate-glow"></div>
+                
+                <div class="relative bg-bis-surface rounded-2xl border border-white/15 p-3 sm:p-4 shadow-2xl space-y-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 text-lg shrink-0">
+                            <i id="searchModeIcon" class="fa-solid fa-sparkles"></i>
+                        </div>
+                        <input type="text" id="aiQueryInput" placeholder="Describe your product (e.g. 'Lithium-ion battery for electric 2-wheelers' or 'Packaged drinking water bottling plant')..." class="w-full bg-transparent text-white placeholder-slate-400 text-sm sm:text-base font-medium focus:outline-none pr-4">
+                        
+                        <!-- File / Spec Upload Mock -->
+                        <button onclick="triggerUploadMock()" class="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs font-semibold transition-colors" title="Upload Product Spec Sheet or PDF">
+                            <i class="fa-solid fa-file-arrow-up text-sky-400"></i>
+                            <span>Upload Spec</span>
+                        </button>
+                        
+                        <!-- Voice Search -->
+                        <button onclick="triggerVoiceMock()" class="w-9 h-9 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-amber-400 flex items-center justify-center text-sm transition-colors" title="Voice Search (Hindi / English)">
+                            <i class="fa-solid fa-microphone"></i>
+                        </button>
+
+                        <!-- Primary Action Button -->
+                        <button onclick="executeAIQuery()" class="px-6 py-3 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-sky-500/30 flex items-center gap-2 whitespace-nowrap active:scale-95 transition-all">
+                            <span>Analyze Standards</span>
+                            <i class="fa-solid fa-bolt-lightning text-amber-300"></i>
+                        </button>
+                    </div>
+
+                    <!-- Trending Inquiry Chips -->
+                    <div class="pt-2 border-t border-white/5 flex flex-wrap items-center gap-2 text-xs">
+                        <span class="text-slate-400 font-medium text-[11px] flex items-center gap-1"><i class="fa-solid fa-fire text-amber-400"></i> Popular Inquiries:</span>
+                        <button onclick="fillQuery('What Indian Standard applies to Lithium-ion EV Batteries (Traction Pack)?')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-sky-300 transition-colors border border-white/5">⚡ EV Battery (IS 16046)</button>
+                        <button onclick="fillQuery('How to verify 6-digit HUID Hallmarking code on Gold Jewelry?')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-amber-300 transition-colors border border-white/5">✨ Gold HUID Verification</button>
+                        <button onclick="fillQuery('Step by step BIS ISI Mark licensing procedure for Footwear MSME')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-emerald-300 transition-colors border border-white/5">👞 Footwear Quality Order</button>
+                        <button onclick="fillQuery('List accredited testing labs for Solar PV Modules under CRS')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-indigo-300 transition-colors border border-white/5">☀️ Solar PV Testing Labs</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive AI Copilot Live Response Panel -->
+        <div class="mt-14 max-w-5xl mx-auto">
+            <div class="glass-panel-glow rounded-3xl p-6 sm:p-8 relative overflow-hidden border border-sky-500/30">
+                
+                <!-- Response Header -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white text-lg shadow-md">
+                            <i class="fa-solid fa-microchip"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-sm font-bold text-white">Autonomous BIS Standards Synthesizer</h3>
+                                <span class="px-2 py-0.5 text-[10px] font-mono font-bold bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 rounded-full flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> 100% Grounded
+                                </span>
+                            </div>
+                            <p class="text-xs text-slate-400 font-mono">Knowledge Base: Gazette Notifications • ManakOnline • IS ClauSafe v4.2</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <button onclick="alert('Exporting Complete Compliance Roadmap as Official PDF...')" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-semibold border border-white/10 flex items-center gap-1.5 transition-colors">
+                            <i class="fa-solid fa-file-pdf text-rose-400"></i>
+                            <span>Export PDF</span>
+                        </button>
+                        <button onclick="alert('Compliance checklist copied to clipboard!')" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-semibold border border-white/10 flex items-center gap-1.5 transition-colors">
+                            <i class="fa-solid fa-copy text-sky-400"></i>
+                            <span>Copy</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dynamic Output Grid -->
+                <div class="grid lg:grid-cols-12 gap-6 mt-6">
+                    
+                    <!-- Left: Synthesized Answer & Crucial Clauses -->
+                    <div class="lg:col-span-8 space-y-4">
+                        <div class="bg-bis-navy/90 rounded-2xl p-5 border border-white/10 space-y-4">
+                            <div class="flex items-center gap-2 text-xs font-mono text-sky-300 pb-3 border-b border-white/5">
+                                <i class="fa-solid fa-terminal"></i>
+                                <span id="outputPromptPreview">Query: Lithium-ion Secondary Cells & Batteries for Portable Applications</span>
+                            </div>
+
+                            <div class="text-xs sm:text-sm text-slate-200 leading-relaxed space-y-3" id="synthesizedContent">
+                                <p>
+                                    Under the <strong class="text-sky-300 font-semibold">Compulsory Registration Scheme (CRS)</strong> notified by MeitY & BIS, this product is mandatorily governed by:
+                                </p>
+                                
+                                <!-- Highlighted Standard Box -->
+                                <div class="p-3.5 rounded-xl bg-sky-950/40 border border-sky-500/30 flex items-start justify-between gap-3">
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-mono text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">MANDATORY</span>
+                                            <h4 class="font-bold text-white text-sm">IS 16046 (Part 2) : 2018 / IEC 62133-2 : 2017</h4>
+                                        </div>
+                                        <p class="text-xs text-slate-300 mt-1">Secondary cells and batteries containing alkaline or other non-acid electrolytes for portable sealed applications.</p>
+                                    </div>
+                                    <button class="px-2.5 py-1 rounded bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 text-xs font-semibold whitespace-nowrap transition-colors">
+                                        View Clauses <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-1"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Key Clauses Table / Snippets -->
+                                <div class="space-y-1.5 pt-1">
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Crucial Test Clauses Required:</p>
+                                    <div class="grid grid-cols-2 gap-2 text-xs">
+                                        <div class="p-2 rounded-lg bg-white/5 border border-white/5 flex items-center gap-2">
+                                            <i class="fa-solid fa-shield-check text-emerald-400"></i>
+                                            <span><strong>Clause 7.3.2:</strong> External Short Circuit Test</span>
+                                        </div>
+                                        <div class="p-2 rounded-lg bg-white/5 border border-white/5 flex items-center gap-2">
+                                            <i class="fa-solid fa-shield-check text-emerald-400"></i>
+                                            <span><strong>Clause 7.3.3:</strong> Free Fall & Mechanical Shock</span>
+                                        </div>
+                                        <div class="p-2 rounded-lg bg-white/5 border border-white/5 flex items-center gap-2">
+                                            <i class="fa-solid fa-shield-check text-emerald-400"></i>
+                                            <span><strong>Clause 7.3.6:</strong> Overcharge & Forced Discharge</span>
+                                        </div>
+                                        <div class="p-2 rounded-lg bg-white/5 border border-white/5 flex items-center gap-2">
+                                            <i class="fa-solid fa-shield-check text-emerald-400"></i>
+                                            <span><strong>Clause 7.3.8:</strong> Thermal Abuse at 130°C</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Compliance Roadmap -->
+                    <div class="lg:col-span-4 space-y-4">
+                        <div class="bg-bis-navy/90 rounded-2xl p-5 border border-white/10 space-y-3">
+                            <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center justify-between">
+                                <span>Execution Workflow</span>
+                                <span class="text-sky-400 font-mono text-[10px]">Scheme: CRS (Scheme-II)</span>
+                            </h4>
+
+                            <div class="space-y-3 text-xs">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-6 h-6 rounded-full bg-sky-500/20 text-sky-400 font-bold flex items-center justify-center shrink-0 text-[11px]">1</div>
+                                    <div>
+                                        <p class="font-bold text-white">Sample Testing at Recognized Lab</p>
+                                        <p class="text-slate-400 text-[11px]">Test reports valid for 90 days from NABL/BIS accredited center.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 font-bold flex items-center justify-center shrink-0 text-[11px]">2</div>
+                                    <div>
+                                        <p class="font-bold text-white">Online Application on ManakOnline</p>
+                                        <p class="text-slate-400 text-[11px]">Submit Form-I with Undertaking & Test Reports.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center shrink-0 text-[11px]">3</div>
+                                    <div>
+                                        <p class="font-bold text-white">Grant of Registration (R-Number)</p>
+                                        <p class="text-slate-400 text-[11px]">Display standard registration mark on product packaging.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-3 border-t border-white/5 flex flex-col gap-2">
+                                <button class="w-full py-2.5 bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 font-bold rounded-xl text-xs flex items-center justify-center gap-2 border border-sky-500/30 transition-colors">
+                                    <i class="fa-solid fa-building-circle-check"></i>
+                                    <span>Find Recognized Labs in India (34 Available)</span>
+                                </button>
+                                <button class="w-full py-2.5 bg-white/5 hover:bg-white/10 text-slate-300 font-semibold rounded-xl text-xs flex items-center justify-center gap-2 border border-white/10 transition-colors">
+                                    <i class="fa-solid fa-calculator text-amber-400"></i>
+                                    <span>Estimate Total Government & Testing Fee</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Trust Statistics Bar -->
+        <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div class="p-5 rounded-2xl glass-panel border border-white/5 space-y-1">
+                <p class="text-2xl sm:text-3xl font-extrabold text-white font-mono">22,000+</p>
+                <p class="text-xs text-slate-400 font-medium">Indian Standards Indexed</p>
+            </div>
+            <div class="p-5 rounded-2xl glass-panel border border-white/5 space-y-1">
+                <p class="text-2xl sm:text-3xl font-extrabold text-amber-400 font-mono">1,250+</p>
+                <p class="text-xs text-slate-400 font-medium">Accredited Testing Labs</p>
+            </div>
+            <div class="p-5 rounded-2xl glass-panel border border-white/5 space-y-1">
+                <p class="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono">100%</p>
+                <p class="text-xs text-slate-400 font-medium">Clause-Grounded Citations</p>
+            </div>
+            <div class="p-5 rounded-2xl glass-panel border border-white/5 space-y-1">
+                <p class="text-2xl sm:text-3xl font-extrabold text-sky-400 font-mono">12+ Indic</p>
+                <p class="text-xs text-slate-400 font-medium">Languages Supported</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Interactive JavaScript Simulation Handlers -->
+    <script>
+        function setLanguage(lang) {
+            document.getElementById('currentLangLabel').innerText = lang;
+        }
+
+        function setQueryMode(button, mode) {
+            document.querySelectorAll('.mode-tab').forEach(tab => {
+                tab.classList.remove('bg-sky-500', 'text-white', 'shadow-lg', 'shadow-sky-500/20');
+                tab.classList.add('glass-panel', 'text-slate-300');
+            });
+            button.classList.add('bg-sky-500', 'text-white', 'shadow-lg', 'shadow-sky-500/20');
+            button.classList.remove('glass-panel', 'text-slate-300');
+
+            const input = document.getElementById('aiQueryInput');
+            const icon = document.getElementById('searchModeIcon');
+
+            if (mode === 'product') {
+                input.placeholder = "Describe your product (e.g. 'Packaged mineral water', 'LED Smart TV 55-inch', 'Cement')...";
+                icon.className = "fa-solid fa-magnifying-glass-nodes";
+            } else if (mode === 'scheme') {
+                input.placeholder = "Ask about BIS Schemes (e.g. 'ISI Mark Scheme I vs Scheme IV difference', 'FMCS for foreign exporter')...";
+                icon.className = "fa-solid fa-stamp";
+            } else if (mode === 'hallmark') {
+                input.placeholder = "Enter 6-digit HUID code or ask hallmarking rules for 22K/18K Gold jewelry...";
+                icon.className = "fa-solid fa-gem";
+            } else if (mode === 'labs') {
+                input.placeholder = "Search accredited lab by location or test type (e.g. 'Transformer testing labs in Gujarat')...";
+                icon.className = "fa-solid fa-microscope";
+            } else if (mode === 'consumer') {
+                input.placeholder = "Ask about counterfeit ISI mark reporting, consumer complaints, or BIS Care App...";
+                icon.className = "fa-solid fa-users-viewfinder";
+            }
+        }
+
+        function fillQuery(text) {
+            document.getElementById('aiQueryInput').value = text;
+            executeAIQuery();
+        }
+
+        function triggerUploadMock() {
+            alert('📁 Spec Sheet Analyzer:\nUpload your product technical data sheet (TDS/PDF). The AI will parse electrical, mechanical, and material parameters to extract applicable IS codes.');
+        }
+
+        function triggerVoiceMock() {
+            alert('🎙️ Multilingual Voice Assistant:\nListening in English / हिन्दी / বাংলা / தமிழ்... Speak your product details.');
+        }
+
+        function executeAIQuery() {
+            const query = document.getElementById('aiQueryInput').value.trim();
+            if (!query) return;
+
+            document.getElementById('outputPromptPreview').innerText = `Query: ${query}`;
+            const synth = document.getElementById('synthesizedContent');
+            
+            synth.innerHTML = `
+                <div class="flex items-center gap-2 py-4 text-sky-400 font-mono text-xs animate-pulse">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i>
+                    <span>Consulting 22,000+ BIS Gazette Standards & Clause Indexes for "${query}"...</span>
+                </div>
+            `;
+
+            setTimeout(() => {
+                synth.innerHTML = `
+                    <p class="text-emerald-400 font-semibold text-xs flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-check"></i> Standard Match Found with 99.4% Semantic Confidence:
+                    </p>
+                    <div class="p-3.5 rounded-xl bg-sky-950/40 border border-sky-500/30 flex items-start justify-between gap-3">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-mono text-xs font-bold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded border border-emerald-400/20">APPLICABLE STANDARD</span>
+                                <h4 class="font-bold text-white text-sm">Relevant IS Code Identified for "${query}"</h4>
+                            </div>
+                            <p class="text-xs text-slate-300 mt-1">Conformity Assessment: Mandated under Quality Control Order (QCO). Technical inspection & safety parameters identified.</p>
+                        </div>
+                        <button class="px-2.5 py-1 rounded bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 text-xs font-semibold whitespace-nowrap transition-colors">
+                            Download Gazette <i class="fa-solid fa-file-arrow-down text-[10px] ml-1"></i>
+                        </button>
+                    </div>
+                    <div class="p-3 rounded-lg bg-white/5 border border-white/5 text-xs text-slate-300 space-y-1">
+                        <p><strong>Licensing Body:</strong> Bureau of Indian Standards (Central / Regional Branch)</p>
+                        <p><strong>Laboratory Testing Time:</strong> Approx. 15-25 working days at NABL accredited facility.</p>
+                    </div>
+                `;
+            }, 800);
+        }
+    </script>
+</body>
+</html>
