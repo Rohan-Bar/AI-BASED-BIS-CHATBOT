@@ -1,0 +1,1615 @@
+/* ============================================================
+   RESET
+============================================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #101828;
+    background: #ffffff;
+}
+
+
+/* ============================================================
+   NAVBAR
+============================================================ */
+
+.nav {
+    height: 80px;
+    width: 100%;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    padding: 0 30px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    border-bottom: 1px solid #e4e7ec;
+}
+
+
+/* ============================================================
+   HAMBURGER
+============================================================ */
+
+.hamburger {
+    width: 44px;
+    height: 44px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 18px;
+    color: #101828;
+}
+
+.hamburger svg {
+    width: 25px;
+    height: 25px;
+}
+
+.hamburger:hover {
+    background: #f2f4f7;
+    border-radius: 8px;
+}
+
+
+/* ============================================================
+   LOGO
+============================================================ */
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    text-decoration: none;
+    color: #101828;
+
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.logo-icon {
+    width: 38px;
+    height: 38px;
+}
+
+
+/* ============================================================
+   NAV ACTIONS
+============================================================ */
+
+.nav-actions {
+    margin-left: auto;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    position: relative;
+}
+
+
+/* ============================================================
+   LANGUAGE
+============================================================ */
+
+.language-btn {
+    height: 42px;
+    padding: 0 12px;
+
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+
+    background: #ffffff;
+    color: #101828;
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    cursor: pointer;
+}
+
+.language-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.language-btn .chevron {
+    width: 16px;
+    height: 16px;
+}
+
+.language-menu {
+    position: absolute;
+
+    top: 50px;
+    right: 120px;
+
+    width: 130px;
+
+    background: #ffffff;
+    border: 1px solid #e4e7ec;
+    border-radius: 8px;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+
+    padding: 6px;
+
+    display: none;
+
+    z-index: 1100;
+}
+
+.language-menu.open {
+    display: block;
+}
+
+.language-option {
+    width: 100%;
+
+    border: none;
+    background: transparent;
+
+    padding: 9px 10px;
+
+    text-align: left;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+}
+
+.language-option:hover {
+    background: #f2f4f7;
+}
+
+
+/* ============================================================
+   LOGIN / SIGNUP
+============================================================ */
+
+.login-btn,
+.signup-btn {
+    text-decoration: none;
+
+    padding: 10px 17px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.login-btn {
+    color: #101828;
+}
+
+.login-btn:hover {
+    background: #f2f4f7;
+}
+
+.signup-btn {
+    background: #155eef;
+    color: #ffffff;
+}
+
+.signup-btn:hover {
+    background: #004eeb;
+}
+
+
+/* ============================================================
+   SIDEBAR
+============================================================ */
+
+.left_border {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 300px;
+    height: 100vh;
+
+    background: #ffffff;
+
+    border-right: 1px solid #e4e7ec;
+
+    z-index: 2000;
+
+    /* IMPORTANT */
+    transform: translateX(-100%);
+
+    transition: transform 0.3s ease;
+
+    overflow-y: auto;
+
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ============================================================
+   SIDEBAR OPEN
+============================================================ */
+
+.left_border.sidebar-open {
+    transform: translateX(0);
+}
+
+
+/* ============================================================
+   CLOSE BUTTON
+============================================================ */
+
+.close-menu {
+    position: absolute;
+
+    top: 18px;
+    right: 18px;
+
+    width: 40px;
+    height: 40px;
+
+    border: none;
+    background: transparent;
+
+    color: #101828;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    z-index: 2100;
+}
+
+.close-menu svg {
+    width: 25px;
+    height: 25px;
+}
+
+.close-menu:hover {
+    background: #f2f4f7;
+}
+
+
+/* ============================================================
+   SIDEBAR MENU
+============================================================ */
+
+.sidebar-menu {
+    padding: 75px 15px 25px;
+}
+
+.menu-heading {
+    font-size: 11px;
+    font-weight: 700;
+
+    color: #98a2b3;
+
+    letter-spacing: 0.8px;
+
+    padding: 20px 14px 8px;
+}
+
+
+/* ============================================================
+   SIDEBAR MENU ITEMS
+============================================================ */
+
+.menu-item {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 12px 14px;
+
+    margin-bottom: 4px;
+
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    color: #344054;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    transition: 0.2s ease;
+}
+
+.menu-item svg {
+    width: 21px;
+    height: 21px;
+
+    flex-shrink: 0;
+}
+
+.menu-item:hover {
+    background: #f2f4f7;
+    color: #155eef;
+}
+
+.menu-item.active {
+    background: #eff4ff;
+    color: #155eef;
+}
+
+
+/* ============================================================
+   SIDEBAR OVERLAY
+============================================================ */
+
+.sidebar-overlay {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100vh;
+
+    background: rgba(16, 24, 40, 0.45);
+
+    z-index: 1500;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        opacity 0.3s ease,
+        visibility 0.3s ease;
+}
+
+
+/* ============================================================
+   OVERLAY OPEN
+============================================================ */
+
+.sidebar-overlay.overlay-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* ============================================================
+   PAGE CONTENT
+============================================================ */
+
+.right_border {
+    width: 100%;
+    padding-top: 80px;
+}
+
+
+/* ============================================================
+   HERO
+============================================================ */
+
+.hero {
+    min-height: calc(100vh - 80px);
+
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 80px 20px;
+
+    background-image: url("images/bis-hero.png");
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-overlay {
+    position: absolute;
+
+    inset: 0;
+
+    background: rgba(10, 50, 120, 0.65);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+
+    width: 100%;
+    max-width: 950px;
+
+    color: #ffffff;
+}
+
+
+/* ============================================================
+   HERO BADGE
+============================================================ */
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 14px;
+
+    border: 1px solid rgba(255, 255, 255, 0.3);
+
+    border-radius: 30px;
+
+    background: rgba(255, 255, 255, 0.1);
+
+    font-size: 13px;
+}
+
+.badge-dot {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+}
+
+/* ============================================================
+   CHAT
+============================================================ */
+
+.chat-wrapper {
+
+    position: relative;
+
+    width: 100%;
+
+    max-width: 750px;
+
+    margin: 35px auto 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+}
+
+
+/* ============================================================
+   CHAT MESSAGES
+============================================================ */
+
+.chat-messages {
+
+    width: 100%;
+
+    max-height: 360px;
+
+    overflow-y: auto;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    padding: 5px 8px;
+
+    scroll-behavior: smooth;
+}
+
+
+/* Hide scrollbar but keep scrolling */
+
+.chat-messages::-webkit-scrollbar {
+
+    width: 5px;
+}
+
+
+.chat-messages::-webkit-scrollbar-thumb {
+
+    background: rgba(255, 255, 255, 0.35);
+
+    border-radius: 10px;
+}
+
+
+/* ============================================================
+   COMMON MESSAGE
+============================================================ */
+
+.chat-message {
+
+    max-width: 75%;
+
+    padding: 11px 15px;
+
+    border-radius: 14px;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+    word-wrap: break-word;
+
+    animation: chatMessageAppear 0.25s ease;
+}
+
+
+/* ============================================================
+   USER MESSAGE
+============================================================ */
+
+.user-message {
+
+    align-self: flex-end;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    border-bottom-right-radius: 5px;
+
+    text-align: left;
+
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+
+/* ============================================================
+   BOT MESSAGE
+============================================================ */
+
+.bot-message {
+
+    align-self: flex-start;
+
+    background: #ffffff;
+
+    color: #101828;
+
+    border-bottom-left-radius: 5px;
+
+    text-align: left;
+
+    box-shadow:
+        0 5px 18px rgba(0, 0, 0, 0.15);
+}
+
+
+/* ============================================================
+   TYPING INDICATOR
+============================================================ */
+
+.typing-indicator {
+
+    align-self: flex-start;
+
+    padding: 10px 15px;
+
+    border-radius: 14px;
+
+    border-bottom-left-radius: 5px;
+
+    background: rgba(255, 255, 255, 0.95);
+
+    color: #667085;
+
+    font-size: 13px;
+
+    box-shadow:
+        0 5px 18px rgba(0, 0, 0, 0.12);
+
+    animation: chatMessageAppear 0.25s ease;
+}
+
+
+/* ============================================================
+   CHAT BOX
+============================================================ */
+
+.chat-box {
+
+    width: 100%;
+
+    min-height: 62px;
+
+    background: #ffffff;
+
+    border-radius: 14px;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 8px;
+
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.2);
+}
+
+
+/* ============================================================
+   CHAT BUTTONS
+============================================================ */
+
+.chat-action,
+.send-btn {
+
+    width: 45px;
+
+    height: 45px;
+
+    flex-shrink: 0;
+
+    border: none;
+
+    border-radius: 10px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+
+.chat-action svg,
+.send-btn svg {
+
+    width: 22px;
+
+    height: 22px;
+}
+
+
+/* ============================================================
+   PLUS BUTTON
+============================================================ */
+
+.plus-btn {
+
+    background: #f2f4f7;
+
+    color: #344054;
+}
+
+
+.plus-btn:hover {
+
+    background: #e4e7ec;
+
+}
+
+
+/* ============================================================
+   SEND BUTTON
+============================================================ */
+
+.send-btn {
+
+    background: #155eef;
+
+    color: #ffffff;
+}
+
+
+.send-btn:hover {
+
+    background: #004eeb;
+
+}
+
+
+/* ============================================================
+   CHAT INPUT
+============================================================ */
+
+.chat-input {
+
+    flex: 1;
+
+    min-width: 0;
+
+    height: 45px;
+
+    border: none;
+
+    outline: none;
+
+    padding: 0 14px;
+
+    font-size: 15px;
+
+    color: #101828;
+
+    background: transparent;
+}
+
+
+.chat-input::placeholder {
+
+    color: #98a2b3;
+}
+
+
+/* ============================================================
+   MESSAGE ANIMATION
+============================================================ */
+
+@keyframes chatMessageAppear {
+
+    from {
+
+        opacity: 0;
+
+        transform: translateY(8px);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: translateY(0);
+    }
+}
+
+
+/* ============================================================
+   ATTACHMENT POPUP
+============================================================ */
+
+/*
+   IMPORTANT:
+   Popup is hidden by default.
+*/
+
+.attachment-popup {
+
+    position: absolute;
+
+    left: 0;
+
+    bottom: 75px;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 8px;
+
+    background: #ffffff;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.18);
+
+    z-index: 1000;
+}
+
+
+/*
+   JavaScript adds this class when
+   the + button is clicked.
+*/
+
+.attachment-popup.show {
+
+    display: flex;
+}
+
+
+/* ============================================================
+   POPUP OPTIONS
+============================================================ */
+
+.popup-option {
+
+    min-width: 105px;
+
+    min-height: 105px;
+
+    padding: 10px;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    color: #101828;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.popup-option:hover {
+
+    background: #f8fafc;
+
+    border-color: #2563eb;
+
+    transform: translateY(-2px);
+}
+
+
+.popup-option svg {
+
+    width: 48px;
+
+    height: 48px;
+
+    color: #101828;
+}
+
+
+.popup-option span {
+
+    font-size: 13px;
+
+    white-space: nowrap;
+}
+
+
+/* ============================================================
+   FOLLOW-UP QUESTIONS
+============================================================ */
+
+.follow-up {
+
+    margin-top: 20px;
+}
+
+
+.question-list {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+}
+
+
+.question-chip {
+
+    padding: 9px 13px;
+
+    border: 1px solid rgba(255, 255, 255, 0.4);
+
+    background: rgba(255, 255, 255, 0.1);
+
+    color: #ffffff;
+
+    border-radius: 20px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.question-chip:hover {
+
+    background: rgba(255, 255, 255, 0.2);
+
+    transform: translateY(-1px);
+}
+
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@media (max-width: 600px) {
+
+    .chat-wrapper {
+
+        max-width: 95%;
+
+        margin-top: 25px;
+    }
+
+
+    .attachment-popup {
+
+        left: 0;
+
+        right: 0;
+
+        width: fit-content;
+
+        max-width: 100%;
+
+        margin: auto;
+
+        flex-wrap: wrap;
+    }
+
+
+    .popup-option {
+
+        min-width: 85px;
+
+        min-height: 90px;
+    }
+
+
+    .popup-option svg {
+
+        width: 38px;
+
+        height: 38px;
+    }
+
+
+    .popup-option span {
+
+        font-size: 11px;
+    }
+
+
+    .question-chip {
+
+        font-size: 12px;
+    }
+
+}
+
+
+/* ============================================================
+   FEATURES
+============================================================ */
+
+.features-section {
+    padding: 90px 25px;
+
+    background: #ffffff;
+}
+
+.features-container {
+    max-width: 1200px;
+
+    margin: auto;
+}
+
+.features-heading {
+    text-align: center;
+
+    max-width: 750px;
+
+    margin: auto;
+}
+
+.section-label,
+.why-label {
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    color: #155eef;
+}
+
+.features-heading h2,
+.why-heading h2 {
+    font-size: 40px;
+
+    margin: 15px 0;
+}
+
+.features-heading h2 span,
+.why-heading h2 span {
+    color: #155eef;
+}
+
+.features-heading p,
+.why-heading p {
+    color: #667085;
+
+    line-height: 1.6;
+}
+
+.features-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 25px;
+
+    margin-top: 50px;
+}
+
+
+/* ============================================================
+   FEATURE CARD
+============================================================ */
+
+.feature-card {
+    display: block;
+
+    padding: 30px;
+
+    border: 1px solid #e4e7ec;
+
+    border-radius: 14px;
+
+    background: #ffffff;
+
+    color: inherit;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition: 0.25s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+
+    text-decoration: none;
+}
+
+
+/* ============================================================
+   FEATURE ICON
+============================================================ */
+
+.feature-icon {
+    width: 48px;
+    height: 48px;
+
+    border-radius: 10px;
+
+    background: #eff4ff;
+
+    color: #155eef;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.feature-icon svg {
+    width: 25px;
+    height: 25px;
+}
+
+
+/* ============================================================
+   FEATURE CONTENT
+============================================================ */
+
+.feature-card h3 {
+    margin-top: 20px;
+
+    font-size: 20px;
+}
+
+.feature-card p {
+    margin-top: 10px;
+
+    color: #667085;
+
+    line-height: 1.6;
+}
+
+
+/* ============================================================
+   FEATURE LINK
+============================================================ */
+
+.feature-link {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin-top: 20px;
+
+    color: #155eef;
+
+    text-decoration: none;
+
+    font-weight: 600;
+}
+
+.feature-link svg {
+    width: 18px;
+}
+
+
+/* ============================================================
+   EXPLORE BUTTON
+============================================================ */
+
+.features-button {
+    display: block;
+
+    margin: 40px auto 0;
+
+    padding: 12px 20px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #155eef;
+
+    color: #ffffff;
+
+    cursor: pointer;
+}
+
+/* ============================================================
+   WHY SECTION
+============================================================ */
+
+.why-section {
+    padding: 90px 25px;
+
+    background: #f8fafc;
+}
+
+.why-container {
+    max-width: 1100px;
+
+    margin: auto;
+}
+
+.why-heading {
+    text-align: center;
+
+    max-width: 700px;
+
+    margin: auto;
+}
+
+.why-features {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 25px;
+
+    margin-top: 50px;
+}
+
+.why-card {
+    padding: 28px;
+
+    background: #ffffff;
+
+    border: 1px solid #e4e7ec;
+
+    border-radius: 14px;
+}
+
+.why-card-icon {
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #eff4ff;
+
+    color: #155eef;
+
+    border-radius: 10px;
+}
+
+.why-card-icon svg {
+    width: 23px;
+    height: 23px;
+}
+
+.why-card h3 {
+    margin-top: 17px;
+}
+
+.why-card p {
+    margin-top: 8px;
+
+    color: #667085;
+
+    line-height: 1.5;
+}
+
+.why-center {
+    grid-column: 1 / -1;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    order: 3;
+}
+
+.center-ring {
+    width: 150px;
+    height: 150px;
+
+    border: 2px solid #155eef;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.center-logo {
+    text-align: center;
+}
+
+.logo-bis {
+    display: block;
+
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.logo-sahayak {
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+.why-bottom {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 15px;
+
+    margin-top: 45px;
+
+    color: #475467;
+
+    font-weight: 600;
+}
+
+.why-bottom svg {
+    width: 20px;
+}
+
+
+/* ============================================================
+   FAQ
+============================================================ */
+
+.faq {
+    max-width: 900px;
+
+    margin: auto;
+
+    padding: 90px 25px;
+}
+
+.faq h2 {
+    text-align: center;
+
+    margin-bottom: 35px;
+}
+
+.faqbox {
+    border-bottom: 1px solid #e4e7ec;
+  
+}
+
+
+.faq-question {
+    padding: 20px 5px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+    border-radius: 8px;
+
+    transition:
+        background 0.3s ease,
+        color 0.3s ease,
+        padding-left 0.3s ease,
+        padding-right 0.3s ease;
+}
+
+
+/* ============================================================
+   FAQ HOVER
+============================================================ */
+
+.faq-question:hover {
+    background: #2563eb;
+
+    color: #ffffff;
+
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+
+/* FAQ icon also becomes white */
+
+.faq-question:hover .faq-icon {
+    color: #ffffff;
+}
+.faq-icon {
+    font-size: 22px;
+
+    transition: transform 0.2s ease;
+}
+
+.faq-answer {
+    max-height: 0;
+
+    overflow: hidden;
+
+    color: #667085;
+
+    line-height: 1.6;
+
+    transition: max-height 0.3s ease;
+
+    padding: 0 5px;
+}
+
+.faqbox.active .faq-answer {
+    max-height: 200px;
+
+    padding-bottom: 20px;
+}
+
+.faqbox.active .faq-icon {
+    transform: rotate(45deg);
+}
+
+
+/* ============================================================
+   FOOTER
+============================================================ */
+
+footer {
+    background: #101828;
+
+    color: #ffffff;
+
+    padding: 50px 30px 25px;
+}
+
+.question {
+    text-align: center;
+
+    margin-bottom: 40px;
+
+    font-size: 18px;
+}
+
+.question span {
+    display: block;
+
+    margin-top: 8px;
+
+    color: #98a2b3;
+
+    font-size: 14px;
+}
+
+.footer {
+    max-width: 1100px;
+
+    margin: auto;
+
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 30px;
+}
+
+.footer-item {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+.footer-item a {
+    color: #98a2b3;
+
+    text-decoration: none;
+
+    font-size: 14px;
+}
+
+.footer-item a:hover {
+    color: #ffffff;
+}
+
+.footer-bottom {
+    max-width: 1100px;
+
+    margin: 45px auto 0;
+
+    padding-top: 20px;
+
+    border-top: 1px solid #344054;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+.footer-logo strong {
+    display: block;
+
+    font-size: 20px;
+}
+
+.footer-logo span {
+    font-size: 10px;
+
+    letter-spacing: 2px;
+}
+
+.footer-bottom p {
+    color: #98a2b3;
+
+    font-size: 13px;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+
+@media (max-width: 768px) {
+
+    .nav {
+        padding: 0 15px;
+    }
+
+    .nav-logo span {
+        display: none;
+    }
+
+    .language-text {
+        display: none;
+    }
+
+    .login-btn {
+        display: none;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .why-features {
+        grid-template-columns: 1fr;
+    }
+
+    .why-center {
+        grid-column: auto;
+        order: 0;
+    }
+
+    .footer {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+
+        gap: 15px;
+
+        text-align: center;
+    }
+
+    .chat-messages {
+    max-height: 300px;
+}
+
+.chat-message {
+    max-width: 85%;
+    font-size: 13px;
+}
+
+.chat-wrapper {
+    margin-top: 25px;
+}
+}
+
+@media (max-width: 480px) {
+
+    .left_border {
+        width: 280px;
+    }
+
+    .hero h1 {
+        font-size: 38px;
+    }
+
+    .hero-description {
+        font-size: 15px;
+    }
+
+    .footer {
+        grid-template-columns: 1fr;
+    }
+
+    .why-bottom {
+        flex-wrap: wrap;
+    }
+}
