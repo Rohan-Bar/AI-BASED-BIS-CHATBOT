@@ -2,7 +2,7 @@ from pathlib import Path
 
 import chromadb
 
-from .embedding import EmbeddingPipeline
+from ragbased.embedding import EmbeddingPipeline
 
 
 class ChromaVectorStore:

@@ -4,8 +4,8 @@ import re
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 
-from .vector_store import ChromaVectorStore
-from .data_loader import load_pdf_documents
+from ragbased.vector_store import ChromaVectorStore
+from ragbased.data_loader import load_pdf_documents
 
 
 # =============================================================
