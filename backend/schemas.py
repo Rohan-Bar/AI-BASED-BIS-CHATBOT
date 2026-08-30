@@ -95,7 +95,7 @@ class RoadmapRequest(BaseModel):
     intended_use: str | None = None
     specifications: str | None = None
     current_status: str | None = None
-
+    current_step: int = 1  
 
 class RoadmapResponse(BaseModel):
     product_name: str

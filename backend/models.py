@@ -51,12 +51,18 @@ class RoadmapProgress(Base):
     __tablename__ = "roadmap_progress"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     product_name = Column(String, nullable=False)
     product_category = Column(String, nullable=True)
     intended_use = Column(String, nullable=True)
     specifications = Column(String, nullable=True)
-    current_step = Column(Integer, default=1)      # checkpoint 1-5
-    steps_data = Column(JSON, nullable=True)       # references/notes per checkpoint
+    current_step = Column(Integer, default=1)
+
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    updated_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),          # refreshes timestamp on every UPDATE
+    )
+
+    references = Column(JSON, nullable=True)

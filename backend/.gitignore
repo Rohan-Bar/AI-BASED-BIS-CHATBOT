@@ -1,1 +1,31 @@
-backend/main.py
+# ===== SECRETS — NEVER COMMIT =====
+.env
+*.env
+
+# ===== PYTHON =====
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# ===== REGENERABLE / LARGE DATA =====
+chroma/
+chroma_db/
+vectorstore/
+*.log
+
+# ===== FRONTEND =====
+node_modules/
+dist/
+build/
+
+# ===== OS / EDITOR =====
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+# vector store - regenerable
+data/vector_store/
+chroma/
+*.sqlite3
