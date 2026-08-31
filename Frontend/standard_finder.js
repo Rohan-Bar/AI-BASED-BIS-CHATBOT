@@ -6,6 +6,10 @@
 /* =========================================
    ELEMENTS
 ========================================= */
+if (!isLoggedIn()) {
+    window.location.href = "login.html";
+}
+
 
 const searchInput = document.getElementById("standardSearch");
 
@@ -151,20 +155,19 @@ findButton.addEventListener("click", function () {
 /* =========================================
    SEARCH FUNCTION
 ========================================= */
+/* =========================================
+   SEARCH FUNCTION — REAL BACKEND
+========================================= */
 
-function searchStandards(query) {
+async function searchStandards(query) {
 
     const originalText = searchButton.innerHTML;
-
 
     /* Loading state */
 
     searchButton.disabled = true;
 
-    searchButton.innerHTML = `
-        <span>Searching...</span>
-    `;
-
+    searchButton.innerHTML = `<span>Searching...</span>`;
 
     /* Scroll to results */
 
@@ -180,82 +183,119 @@ function searchStandards(query) {
     }, 100);
 
 
-    /*
-        Temporary frontend behaviour.
+    try {
 
-        We are NOT pretending that these are
-        actual BIS standards.
+        const data = await apiSearchStandards(query);
 
-        The real results will come from your
-        RAG + ChromaDB backend later.
-    */
+        renderResults(data);
 
-    setTimeout(function () {
+    } catch (err) {
 
-        showTemporaryResult(query);
+        resultCount.textContent = "0";
+
+        emptyState.innerHTML = `
+
+            <h3>Search failed</h3>
+
+            <p>${escapeHTML(err.message)}</p>
+
+        `;
+
+    } finally {
 
         searchButton.disabled = false;
 
         searchButton.innerHTML = originalText;
-
-    }, 800);
-
+    }
 }
 
 
 /* =========================================
-   TEMPORARY RESULT
+   RENDER RESULTS
 ========================================= */
 
-function showTemporaryResult(query) {
+function renderResults(data) {
 
-    resultCount.textContent = "0";
+    const notFound =
+        !data.is_number || data.is_number === "Not found";
 
+    resultCount.textContent = notFound ? "0" : "1";
+
+    if (notFound) {
+
+        emptyState.innerHTML = `
+
+            <div class="empty-icon">
+
+                <svg width="38" height="38" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="1.7">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="m20 20-4-4"></path>
+                </svg>
+
+            </div>
+
+            <h3>No matching standard found</h3>
+
+            <p>${escapeHTML(data.message || "Try a different product name.")}</p>
+        `;
+
+        return;
+    }
+
+
+    /* Real result card — uses your existing CSS classes */
 
     emptyState.innerHTML = `
 
-        <div class="empty-icon">
+        <div class="standard-card">
 
-            <svg
-                width="38"
-                height="38"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.7"
-            >
-                <circle
-                    cx="11"
-                    cy="11"
-                    r="7"
-                ></circle>
+            <div class="standard-top">
 
-                <path
-                    d="m20 20-4-4"
-                ></path>
+                <span class="standard-number">
+                    ${escapeHTML(data.is_number)}
+                </span>
 
-            </svg>
+                <span class="relevance high">
+                    HIGH RELEVANCE
+                </span>
+
+            </div>
+
+            <h3>
+                ${escapeHTML(data.title || "Relevant BIS Standard")}
+            </h3>
+
+            <p>
+                ${escapeHTML(data.message)}
+            </p>
+
+            <div class="standard-meta">
+
+                ${data.metadata && data.metadata.pdf_name
+                    ? `<span>${escapeHTML(data.metadata.pdf_name)}</span>`
+                    : ""}
+                ${data.metadata && data.metadata.page !== undefined
+                    ? `<span>Page ${escapeHTML(String(data.metadata.page))}</span>`
+                    : ""}
+
+                <span>
+                    Indian Standard
+                </span>
+
+            </div>
+
+            <div class="standard-actions">
+
+                <button onclick="window.location.href='../../index.html'">
+                    Ask BIS Sahayak
+                </button>
+
+            </div>
 
         </div>
-
-
-        <h3>
-            Standard search is ready
-        </h3>
-
-
-        <p>
-            Your search for
-            <strong>"${escapeHTML(query)}"</strong>
-            has been received.
-            Connect the BIS Sahayak RAG backend to retrieve
-            the relevant BIS standards here.
-        </p>
-
     `;
-
 }
-
 
 /* =========================================
    CLEAR FORM
