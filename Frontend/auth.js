@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         loginForm.addEventListener(
             "submit",
-            function (event) {
+            async function (event) {
 
                 event.preventDefault();
 
