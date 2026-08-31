@@ -29,7 +29,7 @@ body {
     background: #ffffff;
     display: flex;
     align-items: center;
-    padding: 0 30px;
+    padding: 0 35px;
     position: fixed;
     top: 0;
     left: 0;
@@ -75,13 +75,18 @@ body {
 .nav-logo {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
 
     text-decoration: none;
+    flex-direction: column;
+      line-height: 0.5;
     color: #101828;
 
     font-size: 20px;
     font-weight: 700;
+    padding: 1px;
+    margin: 8px;
 }
 
 .logo-image {
@@ -89,6 +94,30 @@ body {
     height: 48px;
     object-fit: contain;
     border-radius: 10px;
+}
+
+
+.logo-bis {
+    color: #2563eb;
+
+    font-size: 25px;
+
+    font-weight: 850;
+
+    letter-spacing: 1px;
+}
+
+
+.logo-sahayak {
+    margin-top: 4px;
+
+    color: #1e3a8a;
+
+    font-size: 8px;
+
+    font-weight: 800;
+
+    letter-spacing: 2.8px;
 }
 
 
