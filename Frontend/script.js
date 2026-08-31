@@ -196,56 +196,38 @@ const uploadPopup =
 
 
 /* =========================================================
-   BOT RESPONSE
+   BOT RESPONSE — real backend AI (Groq + RAG)
 ========================================================= */
 
-function getBotReply(userMessage) {
+async function getBotReply(userMessage) {
 
-    const msg =
-        userMessage.toLowerCase();
+    try {
 
+        const data = await apiChat(userMessage);
 
-    if (
-        msg.includes("hello") ||
-        msg.includes("hi") ||
-        msg.includes("hey")
-    ) {
+        /* The backend returns { answer, sources } */
 
-        return "Hello! I am BIS-Sahayak. Ask me anything about Indian Standards or compliance.";
+        let reply = data.answer;
+
+        /* Attach sources as citation text */
+
+        if (data.sources && data.sources.length > 0) {
+
+            reply += "\n\n📚 Sources:";
+
+            data.sources.slice(0, 3).forEach(s => {
+
+                reply += "\n• " + s.standard +
+                    (s.page ? " (page " + s.page + ")" : "");
+            });
+        }
+
+        return reply;
+
+    } catch (err) {
+
+        return "⚠️ " + err.message;
     }
-
-
-    if (
-        msg.includes("standard") &&
-        msg.includes("product")
-    ) {
-
-        return "To find the right BIS standard for your product, describe your product type and intended use. You can also use the Standard Finder tool.";
-    }
-
-
-    if (msg.includes("compliance")) {
-
-        return "Compliance depends on your product category. The Compliance Checker can help you organize applicable requirements step by step.";
-    }
-
-
-    if (
-        msg.includes("roadmap") ||
-        msg.includes("certification")
-    ) {
-
-        return "The Certification Roadmap helps you understand the certification journey for your product step by step.";
-    }
-
-
-    if (msg.includes("bis")) {
-
-        return "BIS, the Bureau of Indian Standards, is India's national standards body. I can help you understand standards, compliance and certification.";
-    }
-
-
-    return "Thank you for your question! I recommend using the Standard Finder or Compliance Checker for more detailed BIS guidance.";
 }
 
 
@@ -315,12 +297,11 @@ function showTypingIndicator() {
     return typing;
 }
 
-
 /* =========================================================
    SEND MESSAGE
 ========================================================= */
 
-function sendMessage() {
+async function sendMessage() {
 
     if (
         !chatInput ||
@@ -354,15 +335,21 @@ function sendMessage() {
     chatInput.value = "";
 
 
-    /* Typing indicator */
+    /* Typing indicator (stays visible while AI thinks) */
 
     const typing =
         showTypingIndicator();
 
 
-    /* Temporary bot response */
+    try {
 
-    setTimeout(function () {
+        /* REAL backend AI call — await it */
+
+        const reply =
+            await getBotReply(message);
+
+
+        /* Remove typing indicator */
 
         if (typing) {
             typing.remove();
@@ -370,11 +357,24 @@ function sendMessage() {
 
 
         addChatMessage(
-            getBotReply(message),
+            reply,
             "bot-message"
         );
 
-    }, 700);
+    } catch (err) {
+
+        /* Remove typing indicator */
+
+        if (typing) {
+            typing.remove();
+        }
+
+
+        addChatMessage(
+            "⚠️ " + err.message,
+            "bot-message"
+        );
+    }
 }
 
 

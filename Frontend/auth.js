@@ -158,18 +158,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if (isValid) {
 
-                    alert("Login successful!");
+    try {
+        await apiLogin(email.value.trim(), password.value);
+        alert("Login successful!");
+        window.location.href = "index.html";
+    } catch (err) {
+        alert(err.message);
+    }
+}
 
-                    /*
-                     * Temporary frontend behaviour.
-                     *
-                     * Later:
-                     * FastAPI + database authentication
-                     */
-
-                    window.location.href =
-                        "index.html";
-                }
 
             }
         );
