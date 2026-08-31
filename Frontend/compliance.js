@@ -1,8 +1,23 @@
+/* =====================================================
+   COMPLIANCE CHECKER — REAL BACKEND
+   Backend endpoint: POST /compliance/check (multipart)
+===================================================== */
+
 document.addEventListener("DOMContentLoaded", function () {
 
-    /* 
+    /* =========================================
+       LOGIN PROTECTION
+    ========================================== */
+
+    if (!isLoggedIn()) {
+        window.location.href = "login.html";
+        return;
+    }
+
+
+    /* =========================================
        ELEMENTS
-  */
+    ========================================== */
 
     const mainSearchInput =
         document.querySelector(".compliance-search input");
@@ -75,123 +90,30 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelector(".language");
 
 
-    /* 
-       CHECK THAT IMPORTANT ELEMENTS EXIST
- */
+    /* =========================================
+       SAFETY CHECK
+    ========================================== */
 
     console.log("Compliance Checker JS loaded");
 
-    console.log("Assessment button:", assessmentButton);
-
-
     if (!assessmentButton) {
-
         console.error(
             "Assessment button not found. Check id='assessmentBtn'."
         );
-
         return;
+    }
 
+    if (typeof apiCheckCompliance !== "function") {
+        console.error(
+            "apiCheckCompliance not found — is api.js included BEFORE compliance.js in the HTML?"
+        );
+        return;
     }
 
 
-    /* 
-       DEMO COMPLIANCE DATA
-
-       This is frontend demo data.
-
-       Later this will come from:
-       JavaScript → FastAPI → RAG → pgvector → BIS PDFs
-    */
-
-    const complianceData = {
-
-        "12w led lamp": {
-
-            standard: "IS 16102 (Part 1): 2012",
-
-            category: "Electrical & Electronics",
-
-            score: 82,
-
-            status: "Likely Applicable",
-
-            requirements: [
-                "Electrical safety requirements should be verified.",
-                "Applicable LED lamp testing requirements should be checked.",
-                "Product marking and labeling requirements should be verified.",
-                "Manufacturer and product information should be available."
-            ],
-
-            documents: [
-                "Product technical specification",
-                "Electrical safety test report",
-                "Manufacturer details",
-                "Product labeling information"
-            ]
-
-        },
-
-
-        "electric iron": {
-
-            standard: "IS 302 (Part 2/3): 2017",
-
-            category: "Electrical & Electronics",
-
-            score: 88,
-
-            status: "Likely Applicable",
-
-            requirements: [
-                "Electrical safety requirements should be satisfied.",
-                "Insulation and protection requirements should be verified.",
-                "Heating element safety should be checked.",
-                "Product marking requirements should be verified."
-            ],
-
-            documents: [
-                "Electrical safety test report",
-                "Product specification",
-                "Manufacturer information",
-                "Certification details"
-            ]
-
-        },
-
-
-        "pressure cooker": {
-
-            standard: "IS 2347: 2017",
-
-            category: "Other",
-
-            score: 91,
-
-            status: "Likely Applicable",
-
-            requirements: [
-                "Pressure vessel safety requirements should be verified.",
-                "Material specifications should be checked.",
-                "Safety valve requirements should be verified.",
-                "Product marking requirements should be checked."
-            ],
-
-            documents: [
-                "Material specification",
-                "Pressure test report",
-                "Safety valve information",
-                "Manufacturer information"
-            ]
-
-        }
-
-    };
-
-
-    /* 
+    /* =========================================
        MAIN "CHECK COMPLIANCE" BUTTON
-   */
+    ========================================== */
 
     mainSearchButton.addEventListener(
         "click",
@@ -199,7 +121,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const product =
                 mainSearchInput.value.trim();
-
 
             if (product === "") {
 
@@ -211,28 +132,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 mainSearchInput.focus();
 
                 return;
-
             }
 
+            productNameInput.value = product;
 
-            /*
-            Also copy product to
-            optional Product Name field
-            */
-
-            productNameInput.value =
-                product;
-
-
-            runComplianceCheck(product);
-
+            runComplianceCheck();
         }
     );
 
 
-    /* 
+    /* =========================================
        ENTER KEY IN MAIN SEARCH
-   */
+    ========================================== */
 
     mainSearchInput.addEventListener(
         "keydown",
@@ -243,16 +154,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 event.preventDefault();
 
                 mainSearchButton.click();
-
             }
-
         }
     );
 
 
-    /* 
+    /* =========================================
        QUICK PRODUCT BUTTONS
-  */
+    ========================================== */
 
     tryButtons.forEach(
         function (button) {
@@ -264,292 +173,173 @@ document.addEventListener("DOMContentLoaded", function () {
                     const product =
                         button.textContent.trim();
 
+                    mainSearchInput.value = product;
 
-                    mainSearchInput.value =
-                        product;
+                    productNameInput.value = product;
 
-
-                    productNameInput.value =
-                        product;
-
-
-                    runComplianceCheck(product);
-
+                    runComplianceCheck();
                 }
             );
-
         }
     );
 
 
-    /* 
+    /* =========================================
        START COMPLIANCE ASSESSMENT
-    */
+    ========================================== */
 
     assessmentButton.addEventListener(
         "click",
         function () {
 
-            console.log(
-                "Start Compliance Assessment clicked"
-            );
-
-
-            /*
-            Get product name
-            */
-
-            let productName =
-                productNameInput.value.trim();
-
-
-            /*
-            If optional product name is empty,
-            use main search input.
-            */
-
-            if (productName === "") {
-
-                productName =
-                    mainSearchInput.value.trim();
-
-            }
-
-
-            /*
-            Validate product name
-            */
-
-            if (productName === "") {
-
-                showNotification(
-                    "Please enter your product name before starting the assessment.",
-                    "warning"
-                );
-
-                productNameInput.focus();
-
-                return;
-
-            }
-
-
-            /*
-            Collect form information
-            */
-
-            const assessmentData = {
-
-                productName:
-                    productName,
-
-                category:
-                    categorySelect.value,
-
-                intendedUse:
-                    intendedUseInput.value.trim(),
-
-                manufacturer:
-                    manufacturerSelect.value,
-
-                specifications:
-                    specificationsInput.value.trim(),
-
-                certification:
-                    certificationInput.value.trim(),
-
-                document:
-                    fileInput.files.length > 0
-                        ? fileInput.files[0].name
-                        : null
-
-            };
-
-
-            console.log(
-                "Assessment Data:",
-                assessmentData
-            );
-
-
-            /*
-            Loading state
-            */
-
-            assessmentButton.disabled = true;
-
-            assessmentButton.innerHTML =
-                `Checking Compliance <span>...</span>`;
-
-
-            /*
-            Simulate assessment.
-
-            Later replace this with fetch()
-            to your FastAPI backend.
-            */
-
-            setTimeout(
-                function () {
-
-                    runComplianceCheck(
-                        productName
-                    );
-
-
-                    assessmentButton.disabled =
-                        false;
-
-
-                    assessmentButton.innerHTML =
-                        `Start Compliance Assessment <span>→</span>`;
-
-                },
-                1200
-            );
-
+            runComplianceCheck();
         }
     );
 
 
-    /*
-       RUN COMPLIANCE CHECK
-     */
+    /* =========================================
+       RUN COMPLIANCE CHECK — REAL BACKEND
+    ========================================== */
 
-    function runComplianceCheck(productName) {
+    async function runComplianceCheck() {
 
-        const key =
-            productName.toLowerCase().trim();
+        let productName =
+            productNameInput.value.trim() ||
+            mainSearchInput.value.trim();
 
+        if (productName === "") {
 
-        let result =
-            complianceData[key];
+            showNotification(
+                "Please enter a product name first.",
+                "warning"
+            );
 
+            mainSearchInput.focus();
 
-        /*
-        Unknown product
-        */
-
-        if (!result) {
-
-            result = {
-
-                standard:
-                    "Applicable BIS Standard To Be Identified",
-
-                category:
-                    categorySelect.value !==
-                    "Select category"
-
-                        ? categorySelect.value
-
-                        : "To Be Determined",
-
-                score: 0,
-
-                status:
-                    "Assessment Required",
-
-                requirements: [
-
-                    "Applicable Indian Standard needs to be identified.",
-
-                    "Product specifications need to be reviewed.",
-
-                    "Testing requirements need to be determined.",
-
-                    "Certification requirements need to be verified."
-
-                ],
-
-                documents: [
-
-                    "Product technical specification",
-
-                    "Applicable test report",
-
-                    "Manufacturer information",
-
-                    "Product certification details"
-
-                ]
-
-            };
-
+            return;
         }
 
+        /* Loading state */
 
-        displayResult(
-            productName,
-            result
-        );
+        assessmentButton.disabled = true;
 
+        assessmentButton.innerHTML =
+            `Checking Compliance <span>...</span>`;
+
+        resultCount.textContent = "...";
+        resultCountText.textContent = "assessment";
+
+        emptyResults.innerHTML = `
+
+            <h3>
+                Assessing compliance for
+                <strong>${escapeHTML(productName)}</strong>...
+            </h3>
+
+            <p>
+                This may take a few seconds —
+                the AI is checking BIS documents.
+            </p>
+
+        `;
+
+        resultsSection.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+        try {
+
+            const data = await apiCheckCompliance(
+                {
+                    product_name: productName,
+                    intended_use: intendedUseInput.value.trim(),
+                    manufacturer_type: manufacturerSelect.value,
+                    product_specification: specificationsInput.value.trim(),
+                    existing_certification: certificationInput.value.trim()
+                },
+                fileInput.files.length > 0
+                    ? fileInput.files[0]
+                    : null
+            );
+
+            displayResult(data);
+
+        } catch (err) {
+
+            emptyResults.innerHTML = `
+
+                <h3>Compliance check failed</h3>
+
+                <p>${escapeHTML(err.message)}</p>
+
+            `;
+
+        } finally {
+
+            assessmentButton.disabled = false;
+
+            assessmentButton.innerHTML =
+                `Start Compliance Assessment <span>→</span>`;
+        }
     }
 
 
-    /* 
-       DISPLAY RESULT
-    */
+    /* =========================================
+       DISPLAY RESULT — REAL BACKEND DATA
+       Response shape:
+       {
+         product_name, similarity_percentage,
+         met_count, missing_count,
+         requirements: [ { requirement, status,
+             pdf_name, page } ],
+         message
+       }
+    ========================================== */
 
-    function displayResult(
-        productName,
-        result
-    ) {
+    function displayResult(data) {
 
-        /*
-        Update result count
-        */
+        resultCount.textContent = "1";
+        resultCountText.textContent = "assessment";
 
-        resultCount.textContent =
-            "1";
+        const score =
+            data.similarity_percentage || 0;
 
-        resultCountText.textContent =
-            "assessment";
+        const statusText =
+            score >= 80
+                ? "Mostly Compliant"
+                : score >= 40
+                    ? "Partially Compliant"
+                    : "Significant Gaps";
 
+        /* Requirements list — colour by status */
 
-        /*
-        Requirements
-        */
+        const requirementsHTML = (data.requirements || [])
+            .map(function (item) {
 
-        const requirementsHTML =
-            result.requirements
-                .map(
-                    function (item) {
+                const badge =
+                    item.status === "met"
+                        ? `<span class="req-badge met">FULFILLED</span>`
+                        : `<span class="req-badge missing">MISSING</span>`;
 
-                        return `
-                            <li>
-                                ${item}
-                            </li>
-                        `;
+                const source =
+                    item.pdf_name
+                        ? `<small>Source: ${escapeHTML(item.pdf_name)}` +
+                          (item.page
+                              ? `, page ${escapeHTML(String(item.page))}`
+                              : "") +
+                          `</small>`
+                        : "";
 
-                    }
-                )
-                .join("");
-
-
-        /*
-        Documents
-        */
-
-        const documentsHTML =
-            result.documents
-                .map(
-                    function (item) {
-
-                        return `
-                            <li>
-                                ${item}
-                            </li>
-                        `;
-
-                    }
-                )
-                .join("");
-
-
-        /*
-        Result HTML
-        */
+                return `
+                    <li>
+                        ${badge}
+                        ${escapeHTML(item.requirement)}
+                        ${source}
+                    </li>
+                `;
+            })
+            .join("");
 
         emptyResults.innerHTML = `
 
@@ -566,16 +356,13 @@ document.addEventListener("DOMContentLoaded", function () {
                         </span>
 
                         <h3>
-                            ${productName}
+                            ${escapeHTML(data.product_name)}
                         </h3>
 
                     </div>
 
-
                     <div class="status-badge">
-
-                        ${result.status}
-
+                        ${statusText}
                     </div>
 
                 </div>
@@ -588,11 +375,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="score-circle">
 
                         <strong>
-                            ${result.score}%
+                            ${score}%
                         </strong>
 
                         <span>
-                            Match
+                            Compliant
                         </span>
 
                     </div>
@@ -605,49 +392,17 @@ document.addEventListener("DOMContentLoaded", function () {
                         </h4>
 
                         <p>
+                            ${escapeHTML(data.message || "")}
+                        </p>
 
-                            Based on the information provided,
-                            this product shows approximately
-                            ${result.score}% alignment with
-                            the identified compliance requirements.
-
+                        <p>
+                            <strong>${data.met_count}</strong>
+                            requirements fulfilled ·
+                            <strong>${data.missing_count}</strong>
+                            still missing
                         </p>
 
                     </div>
-
-                </div>
-
-
-                <!-- INFORMATION -->
-
-                <div class="result-grid">
-
-
-                    <div class="result-card">
-
-                        <span>
-                            APPLICABLE STANDARD
-                        </span>
-
-                        <strong>
-                            ${result.standard}
-                        </strong>
-
-                    </div>
-
-
-                    <div class="result-card">
-
-                        <span>
-                            PRODUCT CATEGORY
-                        </span>
-
-                        <strong>
-                            ${result.category}
-                        </strong>
-
-                    </div>
-
 
                 </div>
 
@@ -657,30 +412,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="requirements">
 
                     <h4>
-                        Key Compliance Requirements
+                        Compliance Requirements
                     </h4>
 
                     <ul>
-
-                        ${requirementsHTML}
-
-                    </ul>
-
-                </div>
-
-
-                <!-- DOCUMENTS -->
-
-                <div class="missing-documents">
-
-                    <h4>
-                        Documents / Information To Verify
-                    </h4>
-
-                    <ul>
-
-                        ${documentsHTML}
-
+                        ${requirementsHTML ||
+                          "<li>No requirements identified.</li>"}
                     </ul>
 
                 </div>
@@ -699,45 +436,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     </button>
 
-
-                    <button
-                        type="button"
-                        class="primary-result-btn"
-                        id="viewReport">
-
-                        View Full Report →
-
-                    </button>
-
                 </div>
 
             </div>
-
         `;
 
 
-        /*
-        Scroll to results
-        */
+        /* Scroll to results */
 
         resultsSection.scrollIntoView({
-
             behavior: "smooth",
-
             block: "start"
-
         });
 
 
-        /* 
-           NEW ASSESSMENT
- */
+        /* New Assessment button */
 
         const newAssessment =
-            document.getElementById(
-                "newAssessment"
-            );
-
+            document.getElementById("newAssessment");
 
         if (newAssessment) {
 
@@ -747,149 +463,50 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     clearForm();
 
-
                     document
-                        .querySelector(
-                            ".details-section"
-                        )
+                        .querySelector(".details-section")
                         .scrollIntoView({
-
                             behavior: "smooth"
-
                         });
-
                 }
             );
-
         }
-
-
-        /* 
-           VIEW FULL REPORT
-         */
-
-        const viewReport =
-            document.getElementById(
-                "viewReport"
-            );
-
-
-        if (viewReport) {
-
-            viewReport.addEventListener(
-                "click",
-                function () {
-
-                    showNotification(
-
-                        "Full report generation will be connected to the FastAPI backend.",
-
-                        "info"
-
-                    );
-
-                }
-            );
-
-        }
-
     }
 
 
-    /* 
+    /* =========================================
        CLEAR BUTTON
-   */
+    ========================================== */
 
     clearButton.addEventListener(
         "click",
         function () {
 
             clearForm();
-
         }
     );
 
 
     function clearForm() {
 
-        /*
-        Main search
-        */
+        mainSearchInput.value = "";
 
-        mainSearchInput.value =
-            "";
+        productNameInput.value = "";
 
+        categorySelect.selectedIndex = 0;
 
-        /*
-        Product
-        */
+        manufacturerSelect.selectedIndex = 0;
 
-        productNameInput.value =
-            "";
+        intendedUseInput.value = "";
 
+        specificationsInput.value = "";
 
-        /*
-        Category
-        */
+        certificationInput.value = "";
 
-        categorySelect.selectedIndex =
-            0;
+        fileInput.value = "";
 
-
-        /*
-        Manufacturer
-        */
-
-        manufacturerSelect.selectedIndex =
-            0;
-
-
-        /*
-        Intended use
-        */
-
-        intendedUseInput.value =
-            "";
-
-
-        /*
-        Specifications
-        */
-
-        specificationsInput.value =
-            "";
-
-
-        /*
-        Certification
-        */
-
-        certificationInput.value =
-            "";
-
-
-        /*
-        File
-        */
-
-        fileInput.value =
-            "";
-
-
-        /*
-        Result counter
-        */
-
-        resultCount.textContent =
-            "—";
-
-        resultCountText.textContent =
-            "assessment";
-
-
-        /*
-        Restore empty results
-        */
+        resultCount.textContent = "—";
+        resultCountText.textContent = "assessment";
 
         emptyResults.innerHTML = `
 
@@ -943,72 +560,49 @@ document.addEventListener("DOMContentLoaded", function () {
 
         `;
 
-
         showNotification(
             "Form cleared successfully.",
             "info"
         );
-
     }
 
 
-    /* 
-       FILE UPLOAD
-*/
+    /* =========================================
+       FILE UPLOAD VALIDATION
+    ========================================== */
 
     fileInput.addEventListener(
         "change",
         function () {
 
-            if (
-                fileInput.files.length === 0
-            ) {
-
+            if (fileInput.files.length === 0) {
                 return;
-
             }
 
-
-            const file =
-                fileInput.files[0];
-
-
-            /*
-            Allowed extensions
-            */
+            const file = fileInput.files[0];
 
             const fileName =
                 file.name.toLowerCase();
 
+            /* Backend only supports PDF */
 
-            const allowed =
-                fileName.endsWith(".pdf") ||
-                fileName.endsWith(".doc") ||
-                fileName.endsWith(".docx");
-
-
-            if (!allowed) {
+            if (!fileName.endsWith(".pdf")) {
 
                 showNotification(
-                    "Please upload a PDF, DOC or DOCX file.",
+                    "Please upload a PDF file " +
+                    "(the backend only processes PDFs).",
                     "warning"
                 );
 
-                fileInput.value =
-                    "";
+                fileInput.value = "";
 
                 return;
-
             }
 
-
-            /*
-            Maximum file size = 10 MB
-            */
+            /* Maximum file size = 10 MB */
 
             const maxSize =
                 10 * 1024 * 1024;
-
 
             if (file.size > maxSize) {
 
@@ -1017,85 +611,51 @@ document.addEventListener("DOMContentLoaded", function () {
                     "warning"
                 );
 
-                fileInput.value =
-                    "";
+                fileInput.value = "";
 
                 return;
-
             }
-
 
             showNotification(
                 `${file.name} selected successfully.`,
                 "success"
             );
-
-
-            console.log(
-                "Selected document:",
-                file
-            );
-
         }
     );
 
 
-    /* 
+    /* =========================================
        GUIDED HELP
-   */
+    ========================================== */
 
     guidedButton.addEventListener(
         "click",
         function () {
 
             startGuidedHelp();
-
         }
     );
 
 
     function startGuidedHelp() {
 
-        /*
-        Product question
-        */
-
         const product =
             prompt(
                 "What is the name of your product?"
             );
 
-
-        if (
-            product === null ||
-            product.trim() === ""
-        ) {
-
+        if (product === null || product.trim() === "") {
             return;
-
         }
 
+        mainSearchInput.value = product.trim();
 
-        /*
-        Put product into fields
-        */
-
-        mainSearchInput.value =
-            product.trim();
-
-        productNameInput.value =
-            product.trim();
-
-
-        /*
-        Intended use
-        */
+        productNameInput.value = product.trim();
 
         const intendedUse =
             prompt(
                 "What is the intended use of your product?"
             );
-
 
         if (
             intendedUse !== null &&
@@ -1104,24 +664,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
             intendedUseInput.value =
                 intendedUse.trim();
-
         }
 
-
-        /*
-        Run assessment
-        */
-
-        runComplianceCheck(
-            product.trim()
-        );
-
+        runComplianceCheck();
     }
 
 
-    /* 
+    /* =========================================
        PROFILE
-     */
+    ========================================== */
 
     profileButton.addEventListener(
         "click",
@@ -1131,14 +682,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 "Profile functionality will be connected to your authentication system.",
                 "info"
             );
-
         }
     );
 
 
-    /*
+    /* =========================================
        LANGUAGE
-   */
+    ========================================== */
 
     languageButton.addEventListener(
         "click",
@@ -1148,91 +698,69 @@ document.addEventListener("DOMContentLoaded", function () {
                 "Language selection will be available soon.",
                 "info"
             );
-
         }
     );
 
 
-    /* 
+    /* =========================================
+       ESCAPE HTML
+    ========================================== */
+
+    function escapeHTML(value) {
+
+        const div = document.createElement("div");
+
+        div.textContent = value;
+
+        return div.innerHTML;
+    }
+
+
+    /* =========================================
        NOTIFICATION
-     */
+    ========================================== */
 
     function showNotification(
         message,
         type
     ) {
 
-        /*
-        Remove previous notification
-        */
-
         const old =
             document.querySelector(
                 ".compliance-notification"
             );
 
-
         if (old) {
-
             old.remove();
-
         }
-
-
-        /*
-        Create notification
-        */
 
         const notification =
             document.createElement("div");
 
-
         notification.className =
             `compliance-notification ${type}`;
 
+        notification.textContent = message;
 
-        notification.textContent =
-            message;
-
-
-        document.body.appendChild(
-            notification
-        );
-
-
-        /*
-        Start animation
-        */
+        document.body.appendChild(notification);
 
         setTimeout(
             function () {
 
-                notification.classList.add(
-                    "show"
-                );
+                notification.classList.add("show");
 
             },
             10
         );
 
-
-        /*
-        Remove after 3 seconds
-        */
-
         setTimeout(
             function () {
 
-                notification.classList.remove(
-                    "show"
-                );
-
+                notification.classList.remove("show");
 
                 setTimeout(
                     function () {
-
                         notification.remove();
-
                     },
                     300
                 );
@@ -1240,7 +768,6 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             3000
         );
-
     }
 
 });

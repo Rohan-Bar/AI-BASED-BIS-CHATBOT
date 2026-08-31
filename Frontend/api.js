@@ -50,7 +50,7 @@ async function apiFetch(path, options = {}) {
 
     const headers = options.headers || {};
 
-    /* JSON body */
+    /* JSON body — pass plain objects, apiFetch stringifies */
     if (options.body && typeof options.body === "object") {
         headers["Content-Type"] = "application/json";
         options.body = JSON.stringify(options.body);
@@ -83,8 +83,21 @@ async function apiFetch(path, options = {}) {
     }
 
     if (!response.ok) {
-        const error = await response.json().catch(() => ({}));
-        throw new Error(error.detail || ("Request failed (" + response.status + ")"));
+
+        let detail = null;
+
+        try {
+            detail = await response.json();   /* read backend's error message */
+        } catch (e) {
+            /* body wasn't JSON — ignore */
+        }
+
+        const message =
+            (detail && detail.detail)
+                ? detail.detail
+                : "Request failed (" + response.status + ")";
+
+        throw new Error(message);
     }
 
     return response.json();
@@ -114,7 +127,7 @@ async function apiLogin(email, password) {
 }
 
 
-/* Signup — adjust field names if backend differs */
+/* Signup — pass a plain object; apiFetch stringifies it */
 
 async function apiSignup(name, email, password) {
 
@@ -143,3 +156,82 @@ async function apiChat(message) {
         }
     });
 }
+
+
+/* =====================================================
+   STANDARD FINDER API
+===================================================== */
+
+/* =====================================================
+   STANDARD FINDER API
+===================================================== */
+
+/* Search bar version — returns { is_number, title, metadata, message } */
+
+async function apiSearchStandards(question) {
+
+    return await apiFetch("/standard-finder/ask", {
+        method: "POST",
+        body: {
+            question: question
+        }
+    });
+}
+
+
+/* Detailed form version */
+
+async function apiFindStandard(product_name, product_category, intended_use, specifications) {
+
+    return await apiFetch("/standard-finder", {
+        method: "POST",
+        body: {
+            product_name: product_name,
+            product_category: product_category,
+            intended_use: intended_use,
+            specifications: specifications
+        }
+    });
+}
+
+
+/* =====================================================
+   COMPLIANCE API
+   Multipart form — NOT JSON (because of PDF upload)
+===================================================== */
+
+async function apiCheckCompliance(fields, file) {
+
+    const formData = new FormData();
+
+    /* Text fields */
+
+    formData.append("product_name", fields.product_name);
+
+    if (fields.product_use)          formData.append("product_use", fields.product_use);
+    if (fields.intended_use)         formData.append("intended_use", fields.intended_use);
+    if (fields.manufacturer_type)    formData.append("manufacturer_type", fields.manufacturer_type);
+    if (fields.product_specification) formData.append("product_specification", fields.product_specification);
+    if (fields.existing_certification) formData.append("existing_certification", fields.existing_certification);
+
+    /* PDF file (optional) */
+
+    if (file) {
+        formData.append("file", file);
+    }
+
+    const token = getToken();
+
+    const response = await fetch(API_BASE + "/compliance/check", {
+        method: "POST",
+        headers: token ? { "Authorization": "Bearer " + token } : {},
+        body: formData
+    });
+
+    if (!response.ok) {
+        throw new Error("Compliance check failed (" + response.status + ")");
+    }
+
+    return response.json();
+}
+

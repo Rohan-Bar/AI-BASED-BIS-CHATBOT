@@ -496,7 +496,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         signupForm.addEventListener(
             "submit",
-            function (event) {
+            async function (event) {
 
                 event.preventDefault();
 
@@ -588,21 +588,23 @@ document.addEventListener("DOMContentLoaded", function () {
                    SUCCESS
                 ============================== */
 
-                if (isValid) {
+                                if (isValid) {
 
-                    alert(
-                        "Account created successfully!"
-                    );
+                    try {
 
-                    /*
-                     * Temporary frontend behaviour.
-                     *
-                     * Later:
-                     * FastAPI + database
-                     */
+                        await apiSignup(
+                            name.value.trim(),
+                            email.value.trim(),
+                            password.value
+                        );
 
-                    window.location.href =
-                        "login.html";
+                        alert("Account created successfully! Please log in.");
+                        window.location.href = "login.html";
+
+                    } catch (err) {
+
+                        alert(err.message);
+                    }
                 }
 
             }
