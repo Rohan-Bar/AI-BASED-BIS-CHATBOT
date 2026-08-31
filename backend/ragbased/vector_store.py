@@ -16,15 +16,15 @@ class ChromaVectorStore:
         chunk_overlap: int = 200
     ):
 
-       
+
         # PROJECT ROOT
-        
+
 
         BASE_DIR = Path(__file__).resolve().parents[2]
 
-   
+
         # CHROMA DIRECTORY
-        
+
 
         if persist_dir is None:
 
@@ -42,25 +42,25 @@ class ChromaVectorStore:
 
         self.collection_name = collection_name
 
-       
+
         # CHROMA CLIENT
-       
+
 
         self.client = chromadb.PersistentClient(
             path=self.persist_dir
         )
 
-       
+
         # COLLECTION
-       
+
 
         self.collection = self.client.get_or_create_collection(
             name=self.collection_name
         )
 
-     
+
         # MULTILINGUAL EMBEDDING PIPELINE
-       
+
 
         self.emb_pipe = EmbeddingPipeline(
             model_name=embedding_model,
@@ -83,9 +83,9 @@ class ChromaVectorStore:
             f"{self.collection.count()}"
         )
 
-    
+
     # BUILD VECTOR STORE
-   
+
 
     def build_from_documents(self, documents: list):
 
@@ -110,17 +110,17 @@ class ChromaVectorStore:
 
             return
 
-       
+
         # CREATE EMBEDDINGS
-       
+
 
         embeddings = self.emb_pipe.embed_chunks(
             chunks
         )
 
-       
+
         # DELETE OLD COLLECTION
-       
+
 
         try:
 
@@ -136,17 +136,17 @@ class ChromaVectorStore:
 
             pass
 
-    
+
         # CREATE NEW COLLECTION
-   
+
 
         self.collection = self.client.get_or_create_collection(
             name=self.collection_name
         )
 
-       
+
         # PREPARE DATA
-       
+
 
         ids = [
             f"chunk_{i}"
@@ -182,19 +182,46 @@ class ChromaVectorStore:
             )
 
 
-        # ADD TO CHROMADB
-   
+        # SANITY CHECK — all four lists must be equal length
 
-        self.collection.add(
 
-            ids=ids,
-
-            embeddings=embeddings.tolist(),
-
-            documents=documents_text,
-
-            metadatas=metadatas
+        print(
+            f"[DEBUG] ids={len(ids)}, embeddings={len(embeddings)}, "
+            f"documents={len(documents_text)}, metadatas={len(metadatas)}"
         )
+
+        if not (
+            len(ids)
+            == len(embeddings)
+            == len(documents_text)
+            == len(metadatas)
+        ):
+
+            raise ValueError(
+                "Mismatched list lengths before insert."
+            )
+
+
+        # ADD TO CHROMADB (batched — ChromaDB max batch size is 5461)
+
+
+        BATCH_SIZE = 1000
+        total = len(ids)
+
+        for i in range(0, total, BATCH_SIZE):
+
+            self.collection.add(
+                ids=ids[i:i + BATCH_SIZE],
+                embeddings=embeddings[i:i + BATCH_SIZE].tolist(),
+                documents=documents_text[i:i + BATCH_SIZE],
+                metadatas=metadatas[i:i + BATCH_SIZE]
+            )
+
+            print(
+                f"[INFO] Added batch {i // BATCH_SIZE + 1} "
+                f"({min(i + BATCH_SIZE, total)}/{total} chunks)"
+            )
+
 
         print(
             f"[INFO] Added {len(chunks)} chunks "
@@ -207,7 +234,7 @@ class ChromaVectorStore:
         )
 
     # QUERY VECTOR STORE
-   
+
 
     def query(
         self,
@@ -220,9 +247,9 @@ class ChromaVectorStore:
             f"'{query_text}'"
         )
 
-   
+
         # CREATE QUERY EMBEDDING
-        
+
 
         query_embedding = self.emb_pipe.model.encode(
 
@@ -231,9 +258,9 @@ class ChromaVectorStore:
             normalize_embeddings=True
         )
 
-       
+
         # SEARCH CHROMADB
-        
+
 
         results = self.collection.query(
 
@@ -286,9 +313,9 @@ if __name__ == "__main__":
             "[INFO] Skipping rebuild."
         )
 
-  
+
     # TEST ENGLISH
-    
+
 
     print("\n==============================")
     print("ENGLISH TEST")
@@ -318,9 +345,9 @@ if __name__ == "__main__":
             results["metadatas"][0][i]
         )
 
-   
+
     # TEST HINDI
-    
+
 
     print("\n==============================")
     print("HINDI TEST")
@@ -350,9 +377,9 @@ if __name__ == "__main__":
             results["metadatas"][0][i]
         )
 
-   
+
     # TEST BENGALI
-    
+
 
     print("\n==============================")
     print("BENGALI TEST")
