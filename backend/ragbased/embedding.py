@@ -15,7 +15,6 @@ class EmbeddingPipeline:
 
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
-
         self.model = SentenceTransformer(model_name)
 
         print(
